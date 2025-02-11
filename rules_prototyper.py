@@ -24,6 +24,10 @@ for i in range(num_rules):
         )
         rules.append((rule_type, target, repl))
 
+expander = st.expander("Export rules to CSV")
+for rule in rules:
+    expander.write(",".join(rule))
+
 text_input = st.text_area(
     "Input",
     value="Yašlé (Šuŋgmánitu) waŋ tókhiya yá-haŋ yuŋkȟáŋ othíweta waŋ él míla waŋ iyéyiŋ na yuhá héčhena yé.",
