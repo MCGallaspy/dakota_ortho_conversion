@@ -29,7 +29,8 @@ for i in range(num_rules):
             "...with this.",
             key=f"rule_{i}_arg_1",
         )
-        rules.append((rule_type, target, repl))
+        rules.append((rule_type, target.upper(), repl.upper()))
+        rules.append((rule_type, target.lower(), repl.lower()))
 
 expander = st.expander("Export rules to CSV")
 expander.code("\n".join([",".join(rule) for rule in rules]))
@@ -51,7 +52,7 @@ for rule_type, *rule_args in rules:
             target,
             repl,
             text_output,
-            flags=re.IGNORECASE,
+            flags=re.NOFLAG,
         )
     if rule_type == "Replace (ignore accents)":
         combining_accents = ("̀", "́")
@@ -68,7 +69,7 @@ for rule_type, *rule_args in rules:
             target,
             repl,
             text_output,
-            flags=re.IGNORECASE,
+            flags=re.NOFLAG,
         )
         text_output = unicodedata.normalize("NFC", text_output)
 
