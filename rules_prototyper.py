@@ -4,36 +4,69 @@ import re
 
 st.title("Orthography Conversion Rules Prototyper")
 
-rules = []
+rules = st.session_state.get(
+    "rules",
+    [
+        ("Replace", "", ""),
+    ]
+)
+
+expander = st.expander("Import rules from CSV")
+rules_input = expander.text_area(
+    "Rules",
+)
+if expander.button("Import"):
+    rules = rules_input.split("\n")
+    rules = [
+        tuple(rule.split(","))
+        for rule in rules
+    ]
+
+def update_rules_len():
+    num_rules = st.session_state.num_rules
+    diff = num_rules - len(st.session_state.rules)
+    if diff > 0:
+        st.session_state.rules += [("Replace", "", "")] * diff
+    elif diff < 0:
+        st.session_state.rules = st.session_state.rules[:num_rules]
+    
 
 num_rules = st.number_input(
     "Number of rules",
     min_value=0,
-    value=1,
+    value=len(rules),
     key="num_rules",
+    on_change=update_rules_len,
 )
 
+specified_rules = []
 for i in range(num_rules):
+    rule = rules[i] if i < len(rules) else ("Replace", "", "")
     cols = st.columns(3)
+    RULE_TYPES = ("Replace", "Replace (ignore accents)")
     rule_type = cols[0].selectbox(
         "Rule type",
-        ("Replace", "Replace (ignore accents)"),
+        RULE_TYPES,
         key=f"rule_{i}_type",
+        index=RULE_TYPES.index(rule[0]),
     )
     if rule_type in ("Replace", "Replace (ignore accents)"):
         target = cols[1].text_input(
             "Replace this...",
             key=f"rule_{i}_arg_0",
+            value=rule[1],
         )
         repl = cols[2].text_input(
             "...with this.",
             key=f"rule_{i}_arg_1",
+            value=rule[2],
         )
-        rules.append((rule_type, target.upper(), repl.upper()))
-        rules.append((rule_type, target.lower(), repl.lower()))
+        specified_rules.append((rule_type, target, repl))
+
+st.session_state.rules = specified_rules
 
 expander = st.expander("Export rules to CSV")
-expander.code("\n".join([",".join(rule) for rule in rules]))
+expander.code("\n".join([",".join(rule) for rule in st.session_state.rules]))
 
 text_input = st.text_area(
     "Input",
@@ -43,7 +76,17 @@ text_input = st.text_area(
 text_input = unicodedata.normalize("NFC", text_input)
 
 text_output = text_input
-for rule_type, *rule_args in rules:
+
+normalized_rules = []
+for rule_type, *rule_args in st.session_state.rules:
+    normalized_rules.append(tuple(
+        [rule_type] + [e.upper() for e in rule_args]
+    ))
+    normalized_rules.append(tuple(
+        [rule_type] + [e.lower() for e in rule_args]
+    ))
+    
+for rule_type, *rule_args in normalized_rules:
     if rule_type == "Replace":
         target, repl = rule_args
         target = unicodedata.normalize("NFC", target)
@@ -74,4 +117,4 @@ for rule_type, *rule_args in rules:
         text_output = unicodedata.normalize("NFC", text_output)
 
 st.header("Output")
-st.text(text_output)
+st.markdown(text_output)
