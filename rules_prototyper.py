@@ -29,8 +29,8 @@ def update_rules_len():
         st.session_state.rules += [("Replace", "", "")] * diff
     elif diff < 0:
         st.session_state.rules = st.session_state.rules[:num_rules]
-    
 
+specified_rules = []
 num_rules = st.number_input(
     "Number of rules",
     min_value=0,
@@ -39,11 +39,14 @@ num_rules = st.number_input(
     on_change=update_rules_len,
 )
 
-specified_rules = []
 for i in range(num_rules):
     rule = rules[i] if i < len(rules) else ("Replace", "", "")
     cols = st.columns(3)
-    RULE_TYPES = ("Replace", "Replace (ignore accents)")
+    RULE_TYPES = (
+        "Replace",
+        "Replace (ignore accents)",
+        "LLC accents to X accents",
+    )
     rule_type = cols[0].selectbox(
         "Rule type",
         RULE_TYPES,
@@ -54,14 +57,17 @@ for i in range(num_rules):
         target = cols[1].text_input(
             "Replace this...",
             key=f"rule_{i}_arg_0",
-            value=rule[1],
+            value=rule[1] if len(rule) > 1 else "",
         )
         repl = cols[2].text_input(
             "...with this.",
             key=f"rule_{i}_arg_1",
-            value=rule[2],
+            value=rule[2] if len(rule) > 2 else "",
         )
         specified_rules.append((rule_type, target, repl))
+    elif rule_type == "LLC accents to X accents":
+        cols[1].markdown("Remove accents when they do not fall on the second syllable, and retain all others.")
+        specified_rules.append((rule_type,))
 
 st.session_state.rules = specified_rules
 
@@ -107,7 +113,7 @@ for rule_type, *rule_args in normalized_rules:
             repl =repl.replace(e, "")
         target = unicodedata.normalize("NFC", target)
         repl = unicodedata.normalize("NFC", repl)
-        text_output = unicodedata.normalize("NFD", text_output)                
+        text_output = unicodedata.normalize("NFD", text_output)
         text_output = re.sub(
             target,
             repl,
@@ -115,6 +121,38 @@ for rule_type, *rule_args in normalized_rules:
             flags=re.NOFLAG,
         )
         text_output = unicodedata.normalize("NFC", text_output)
+    elif rule_type == "LLC accents to X accents":
+        matches = re.split(r"(\s+)", text_output.lstrip())
+        if len(matches) % 2 == 1:
+            matches.append("")
+        words = [
+            (matches[2*i], matches[2*i+1])
+            for i in range(len(matches)//2)
+        ]
+        result = ""
+        for word, whitespace_sequence in words:
+            word = unicodedata.normalize("NFD", word)
+            vowel_pattern = re.compile(r"[aeiouAEIOU]")
+            first_vowel_mo = vowel_pattern.search(word, pos=0)
+            if first_vowel_mo:
+                first_vowel = first_vowel_mo.group(0)
+                pos = word.index(first_vowel) + 1
+                second_vowel_mo = vowel_pattern.search(
+                    word,
+                    pos=pos,
+                )
+                if second_vowel_mo:
+                    second_vowel = second_vowel_mo.group(0)
+                    pos = word.index(second_vowel, pos)
+                    combining_accents = ("̀", "́")
+                    is_second_syllable_accented = \
+                        (pos+1 < len(word)) and \
+                        (word[pos+1] in combining_accents)
+                    if is_second_syllable_accented:
+                        word = word[:pos+1] + word[pos+2:]
+            word = unicodedata.normalize("NFC", word)
+            result += word + whitespace_sequence
+        text_output = result
 
 st.header("Output")
-st.markdown(text_output)
+st.text(text_output)
