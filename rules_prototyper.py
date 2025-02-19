@@ -45,7 +45,7 @@ for i in range(num_rules):
     RULE_TYPES = (
         "Replace",
         "Replace (ignore accents)",
-        "LLC accents to X accents",
+        "LLC to UMinn accents",
     )
     rule_type = cols[0].selectbox(
         "Rule type",
@@ -65,7 +65,7 @@ for i in range(num_rules):
             value=rule[2] if len(rule) > 2 else "",
         )
         specified_rules.append((rule_type, target, repl))
-    elif rule_type == "LLC accents to X accents":
+    elif rule_type == "LLC to UMinn accents":
         cols[1].markdown("Remove accents when they do not fall on the second syllable, and retain all others.")
         specified_rules.append((rule_type,))
 
@@ -121,7 +121,7 @@ for rule_type, *rule_args in normalized_rules:
             flags=re.NOFLAG,
         )
         text_output = unicodedata.normalize("NFC", text_output)
-    elif rule_type == "LLC accents to X accents":
+    elif rule_type == "LLC to UMinn accents":
         matches = re.split(r"(\s+)", text_output.lstrip())
         if len(matches) % 2 == 1:
             matches.append("")
