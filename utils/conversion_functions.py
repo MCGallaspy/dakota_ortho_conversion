@@ -47,6 +47,9 @@ def convert(rules, input_text) -> str:
                             (word[pos+1] in COMBINING_ACCENTS)
                         if is_second_syllable_accented:
                             word = word[:pos+1] + word[pos+2:]
+                    else: # Single syllable word, suppress accents
+                        for accent in COMBINING_ACCENTS:
+                            word = word.replace(accent, "")
                 word = unicodedata.normalize("NFC", word)
                 result += word + whitespace_sequence
             output_text = result
