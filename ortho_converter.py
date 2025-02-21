@@ -30,8 +30,8 @@ target_orthography = rightcol.selectbox(
 
 if source_orthography == "LLC" and target_orthography == "UMinn":
     output_text = convert_llc_to_uminn(input_text)
-#elif source_orthography == "UMinn" and target_orthography == "LLC":
-#    output_text = convert_uminn_to_llc(input_text)
+elif source_orthography == "UMinn" and target_orthography == "LLC":
+    output_text = convert_uminn_to_llc(input_text)
 elif source_orthography == target_orthography:
     output_text = input_text
 else:

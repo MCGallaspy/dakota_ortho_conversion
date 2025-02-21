@@ -47,6 +47,7 @@ for i in range(num_rules):
     RULE_TYPES = (
         "Replace",
         "LLC to UMinn accents",
+        "UMinn to LLC accents",
     )
     rule_type = cols[0].selectbox(
         "Rule type",
@@ -68,6 +69,9 @@ for i in range(num_rules):
         specified_rules.append((rule_type, target, repl))
     elif rule_type == "LLC to UMinn accents":
         cols[1].markdown("Remove accents when they do not fall on the second syllable, and retain all others.")
+        specified_rules.append((rule_type,))
+    elif rule_type == "UMinn to LLC accents":
+        cols[1].markdown("Add accents to 2nd syllable of unaccented words, and to all monosyllabic words.")
         specified_rules.append((rule_type,))
 
 st.session_state.rules = specified_rules
