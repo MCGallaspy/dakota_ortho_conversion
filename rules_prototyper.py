@@ -2,6 +2,8 @@ import streamlit as st
 import unicodedata
 import re
 
+from utils.conversion_functions import convert
+
 st.title("Orthography Conversion Rules Prototyper")
 
 rules = st.session_state.get(
@@ -44,7 +46,6 @@ for i in range(num_rules):
     cols = st.columns(3)
     RULE_TYPES = (
         "Replace",
-        "Replace (ignore accents)",
         "LLC to UMinn accents",
     )
     rule_type = cols[0].selectbox(
@@ -81,8 +82,6 @@ text_input = st.text_area(
 
 text_input = unicodedata.normalize("NFC", text_input)
 
-text_output = text_input
-
 normalized_rules = []
 for rule_type, *rule_args in st.session_state.rules:
     normalized_rules.append(tuple(
@@ -91,68 +90,8 @@ for rule_type, *rule_args in st.session_state.rules:
     normalized_rules.append(tuple(
         [rule_type] + [e.lower() for e in rule_args]
     ))
-    
-for rule_type, *rule_args in normalized_rules:
-    if rule_type == "Replace":
-        target, repl = rule_args
-        target = unicodedata.normalize("NFC", target)
-        repl = unicodedata.normalize("NFC", repl)
-        text_output = re.sub(
-            target,
-            repl,
-            text_output,
-            flags=re.NOFLAG,
-        )
-    if rule_type == "Replace (ignore accents)":
-        combining_accents = ("̀", "́")
-        target, repl = rule_args
-        target = unicodedata.normalize("NFD", target)
-        repl = unicodedata.normalize("NFD", repl)
-        for e in combining_accents:
-            target = target.replace(e, "")
-            repl =repl.replace(e, "")
-        target = unicodedata.normalize("NFC", target)
-        repl = unicodedata.normalize("NFC", repl)
-        text_output = unicodedata.normalize("NFD", text_output)
-        text_output = re.sub(
-            target,
-            repl,
-            text_output,
-            flags=re.NOFLAG,
-        )
-        text_output = unicodedata.normalize("NFC", text_output)
-    elif rule_type == "LLC to UMinn accents":
-        matches = re.split(r"(\s+)", text_output.lstrip())
-        if len(matches) % 2 == 1:
-            matches.append("")
-        words = [
-            (matches[2*i], matches[2*i+1])
-            for i in range(len(matches)//2)
-        ]
-        result = ""
-        for word, whitespace_sequence in words:
-            word = unicodedata.normalize("NFD", word)
-            vowel_pattern = re.compile(r"[aeiouAEIOU]")
-            first_vowel_mo = vowel_pattern.search(word, pos=0)
-            if first_vowel_mo:
-                first_vowel = first_vowel_mo.group(0)
-                pos = word.index(first_vowel) + 1
-                second_vowel_mo = vowel_pattern.search(
-                    word,
-                    pos=pos,
-                )
-                if second_vowel_mo:
-                    second_vowel = second_vowel_mo.group(0)
-                    pos = word.index(second_vowel, pos)
-                    combining_accents = ("̀", "́")
-                    is_second_syllable_accented = \
-                        (pos+1 < len(word)) and \
-                        (word[pos+1] in combining_accents)
-                    if is_second_syllable_accented:
-                        word = word[:pos+1] + word[pos+2:]
-            word = unicodedata.normalize("NFC", word)
-            result += word + whitespace_sequence
-        text_output = result
+
+text_output = convert(normalized_rules, text_input)
 
 st.header("Output")
 st.text(text_output)
