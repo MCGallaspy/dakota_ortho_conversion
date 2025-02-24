@@ -82,7 +82,14 @@ def convert(rules, input_text) -> str:
                         if not is_word_accented:
                             word = word[:pos+1] + "́" + word[pos+1:]
                     elif not is_word_accented:
-                        word = word[:pos] + "́" + word[pos:]
+                        ALWAYS_UNACCENTED = [
+                            "na",
+                            "waŋ",
+                            "kiŋ",
+                            "k'uŋ",
+                        ]
+                        if word not in ALWAYS_UNACCENTED:
+                            word = word[:pos] + "́" + word[pos:]
                 word = unicodedata.normalize("NFC", word)
                 result += word + whitespace_sequence
             output_text = result
