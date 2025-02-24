@@ -118,8 +118,6 @@ def convert_llc_to_uminn(input_text):
 
 
 def convert_uminn_to_llc(input_text):
-    # Same as convert_llc_to_uminn but reverses both the order of
-    # rules as well as the order of replacements.
     rules = """
         Replace,ṡ,š
         Replace,ġ,ǧ
@@ -144,6 +142,46 @@ def convert_uminn_to_llc(input_text):
         Replace,ṭi,thi
         Replace,ṭu,thu
         Replace,ḣ,ȟ
+    """.strip().split("\n")
+    rules = [tuple(rule.split(",")) for rule in rules]
+    case_normalized_rules = []
+    for rule_type, *rule_args in rules:
+        rule_type = rule_type.strip()
+        case_normalized_rules.append(tuple(
+            [rule_type] + [e.upper() for e in rule_args]
+        ))
+        case_normalized_rules.append(tuple(
+            [rule_type] + [e.lower() for e in rule_args]
+        ))
+    case_normalized_rules.append(("UMinn to LLC accents",))
+    return convert(case_normalized_rules, input_text)
+
+
+def convert_uminn_to_llc_no_velar_aspiration(input_text):
+    rules = """
+        Replace,ṡ,š
+        Replace,ġ,ǧ
+        Replace,c̣,čh
+        Replace,c,č
+        Replace,ḳa,kha
+        Replace,ḳo,kho
+        Replace,ḳuŋ,khuŋ
+        Replace,ḳe,khe
+        Replace,ḳi,khi
+        Replace,ḳu,ku
+        Replace,p̣a,pha
+        Replace,p̣o,pho
+        Replace,p̣uŋ,phuŋ
+        Replace,p̣e,phe
+        Replace,p̣i,phi
+        Replace,p̣u,phu
+        Replace,ṭa,tȟa
+        Replace,ṭo,tho
+        Replace,ṭuŋ,thuŋ
+        Replace,ṭe,the
+        Replace,ṭi,thi
+        Replace,ṭu,thu
+        Replace,ḣ,h
     """.strip().split("\n")
     rules = [tuple(rule.split(",")) for rule in rules]
     case_normalized_rules = []

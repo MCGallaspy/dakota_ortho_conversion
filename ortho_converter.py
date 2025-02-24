@@ -1,6 +1,10 @@
 import streamlit as st
 
-from utils.conversion_functions import convert_llc_to_uminn, convert_uminn_to_llc
+from utils.conversion_functions import (
+    convert_llc_to_uminn,
+    convert_uminn_to_llc_no_velar_aspiration,
+    convert_uminn_to_llc,
+)
 
 
 st.title("Dakota Orthography Conversion")
@@ -27,11 +31,16 @@ target_orthography = rightcol.selectbox(
     ORTHOGRAPHIES,
     index=1,
 )
+if target_orthography == "LLC":
+    with_velar_aspiration = rightcol.checkbox("With velar aspiration", value=True)
 
 if source_orthography == "LLC" and target_orthography == "UMinn":
     output_text = convert_llc_to_uminn(input_text)
 elif source_orthography == "UMinn" and target_orthography == "LLC":
-    output_text = convert_uminn_to_llc(input_text)
+    if with_velar_aspiration:
+        output_text = convert_uminn_to_llc(input_text)
+    else:
+        output_text = convert_uminn_to_llc_no_velar_aspiration(input_text)
 elif source_orthography == target_orthography:
     output_text = input_text
 else:
