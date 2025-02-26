@@ -93,6 +93,10 @@ def normalize_replace_rules(rules):
         2. A version of the rule with the initial letter only uppercase.
         3. All vowels match their accented and unaccented versions,
             e.g. "a" matches "a" and "á".
+        4. Prevent patterns from matching only part of a sequence of
+           combining diacritics (in other words, h shouldn't match ȟ even
+           though the former is a prefix of the latter because it would
+           leave an orphaned combining diacritic character)
     """
     normalized_rules = []
     for rule_type, target, repl in rules:
@@ -102,6 +106,7 @@ def normalize_replace_rules(rules):
         target = unicodedata.normalize("NFD", target)
         repl = unicodedata.normalize("NFD", repl)
         target = re.sub(r"([aeiou])", r"\1(́)?", target) # a -> a(́)?
+        target += r"(?=[a-zA-Z]|\s|$)"
         repl = re.sub(r"([aeiou])", r"\1\\1", repl) # a -> a\1
         normalized_rules.append((rule_type, target, repl))
         if target:
