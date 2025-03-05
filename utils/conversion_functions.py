@@ -180,7 +180,7 @@ def convert_uminn_to_llc(input_text):
     ]
     normalized_rules = normalize_replace_rules(rules)
     normalized_rules.append(("UMinn to LLC accents",))
-    return convert(case_normalized_rules, input_text)
+    return convert(normalized_rules, input_text)
 
 
 def convert_uminn_to_llc_no_velar_aspiration(input_text):
