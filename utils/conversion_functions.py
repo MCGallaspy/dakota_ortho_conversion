@@ -80,7 +80,14 @@ def convert(rules, input_text) -> str:
                         if not is_word_accented:
                             word = word[:pos+1] + "́" + word[pos+1:]
                     elif not is_word_accented:
-                        word = word[:pos] + "́" + word[pos:]
+                        ALWAYS_UNACCENTED = [
+                            "na",
+                            "waŋ",
+                            "kiŋ",
+                            "k'uŋ",
+                        ]
+                        if word not in ALWAYS_UNACCENTED:
+                            word = word[:pos] + "́" + word[pos:]
                 word = unicodedata.normalize("NFC", word)
                 result += word + whitespace_sequence
             output_text = result
@@ -166,6 +173,41 @@ def convert_uminn_to_llc(input_text):
         Replace,ṭi,thi
         Replace,ṭu,thu
         Replace,ḣ,ȟ
+    """.strip().split("\n")
+    rules = [
+        tuple(e.strip() for e in rule.split(","))
+        for rule in rules
+    ]
+    normalized_rules = normalize_replace_rules(rules)
+    normalized_rules.append(("UMinn to LLC accents",))
+    return convert(normalized_rules, input_text)
+
+
+def convert_uminn_to_llc_no_velar_aspiration(input_text):
+    rules = """
+        Replace,ṡ,š
+        Replace,ġ,ǧ
+        Replace,c̣,čh
+        Replace,c,č
+        Replace,ḳa,kha
+        Replace,ḳo,kho
+        Replace,ḳuŋ,khuŋ
+        Replace,ḳe,khe
+        Replace,ḳi,khi
+        Replace,ḳu,ku
+        Replace,p̣a,pha
+        Replace,p̣o,pho
+        Replace,p̣uŋ,phuŋ
+        Replace,p̣e,phe
+        Replace,p̣i,phi
+        Replace,p̣u,phu
+        Replace,ṭa,tha
+        Replace,ṭo,tho
+        Replace,ṭuŋ,thuŋ
+        Replace,ṭe,the
+        Replace,ṭi,thi
+        Replace,ṭu,thu
+        Replace,ḣ,h
     """.strip().split("\n")
     rules = [
         tuple(e.strip() for e in rule.split(","))
