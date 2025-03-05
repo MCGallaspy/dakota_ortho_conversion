@@ -2,7 +2,7 @@ import streamlit as st
 import unicodedata
 import re
 
-from utils.conversion_functions import convert
+from utils.conversion_functions import convert, normalize_replace_rules
 
 st.title("Orthography Conversion Rules Prototyper")
 
@@ -87,14 +87,13 @@ text_input = st.text_area(
 text_input = unicodedata.normalize("NFC", text_input)
 
 normalized_rules = []
-for rule_type, *rule_args in st.session_state.rules:
-    normalized_rules.append(tuple(
-        [rule_type] + [e.upper() for e in rule_args]
-    ))
-    normalized_rules.append(tuple(
-        [rule_type] + [e.lower() for e in rule_args]
-    ))
-
+for rule_type, *rule_args in specified_rules:
+    if rule_type == "Replace":
+        normalized_rules += normalize_replace_rules([
+            (rule_type, *rule_args)
+        ])
+    else:
+        normalized_rules.append((rule_type, *rule_args))
 text_output = convert(normalized_rules, text_input)
 
 st.header("Output")
