@@ -4,6 +4,7 @@ from utils.conversion_functions import (
     convert_llc_to_uminn,
     convert_uminn_to_llc_no_velar_aspiration,
     convert_uminn_to_llc,
+    convert_uminn_to_phoneme,
 )
 
 
@@ -12,6 +13,7 @@ st.title("Dakota Orthography Conversion")
 ORTHOGRAPHIES = (
     "LLC",
     "UMinn",
+    "IPA Phonemic",
 )
 
 leftcol, rightcol = st.columns(2)
@@ -41,6 +43,8 @@ elif source_orthography == "UMinn" and target_orthography == "LLC":
         output_text = convert_uminn_to_llc(input_text)
     else:
         output_text = convert_uminn_to_llc_no_velar_aspiration(input_text)
+elif source_orthography == "UMinn" and target_orthography == "IPA Phonemic":
+    output_text = convert_uminn_to_phoneme(input_text)
 elif source_orthography == target_orthography:
     output_text = input_text
 else:

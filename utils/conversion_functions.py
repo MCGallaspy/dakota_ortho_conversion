@@ -216,3 +216,30 @@ def convert_uminn_to_llc_no_velar_aspiration(input_text):
     normalized_rules = normalize_replace_rules(rules)
     normalized_rules.append(("UMinn to LLC accents",))
     return convert(normalized_rules, input_text)
+
+
+
+def convert_uminn_to_phoneme(input_text):
+    rules = """
+        Replace,aŋ,ã
+        Replace,iŋ,ĩ
+        Replace,uŋ,ũ
+        Replace,c̣,tʃʰ
+        Replace,cʼ,tʃʼ
+        Replace,c,tʃ
+        Replace,ḳ,kʰ
+        Replace,p̣,pʰ
+        Replace,ṭ,tʰ
+        Replace,ḣʼ,xʼ
+        Replace,ḣ,x
+        Replace,ṡʼ,ʃʼ
+        Replace,ṡ,ʃ
+        Replace,ġ,ɣ
+        Replace,ż,ʒ
+    """.strip().split("\n")
+    rules = [
+        tuple(e.strip() for e in rule.split(","))
+        for rule in rules
+    ]
+    normalized_rules = normalize_replace_rules(rules)
+    return convert(normalized_rules, input_text)
