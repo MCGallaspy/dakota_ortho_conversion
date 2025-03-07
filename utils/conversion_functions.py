@@ -50,7 +50,7 @@ def convert(rules, input_text) -> str:
                 word = unicodedata.normalize("NFC", word)
                 result += word + whitespace_sequence
             output_text = result
-        elif rule_type == "UMinn to LLC accents":
+        elif rule_type in ("UMinn to LLC accents", "Phonemic to LLC accents"):
             matches = re.split(r"(\s+)", output_text.lstrip())
             if len(matches) % 2 == 1:
                 matches.append("")
@@ -218,7 +218,6 @@ def convert_uminn_to_llc_no_velar_aspiration(input_text):
     return convert(normalized_rules, input_text)
 
 
-
 def convert_uminn_to_phoneme(input_text):
     rules = """
         Replace,aŋ,ã
@@ -242,4 +241,42 @@ def convert_uminn_to_phoneme(input_text):
         for rule in rules
     ]
     normalized_rules = normalize_replace_rules(rules)
+    return convert(normalized_rules, input_text)
+
+
+def convert_phoneme_to_llc(input_text):
+    rules = """
+        Replace,ã,aŋ
+        Replace,ĩ,iŋ
+        Replace,ũ,uŋ
+        Replace,tʃʰ,čh
+        Replace,tʃʼ,čʼ
+        Replace,tʃ,č
+        Replace,kʰ,kh
+        Replace,pʰ,ph
+        Replace,tʰ,th
+        Replace,xʼ,ȟʼ
+        Replace,x,ȟ
+        Replace,ʃʼ,šʼ
+        Replace,ʃ,š
+        Replace,ɣ,ǧ
+        Replace,ʒ,ž
+        Replace,kha,kȟa
+        Replace,kho,kȟo
+        Replace,khuŋ,kȟuŋ
+        Replace,pha,pȟa
+        Replace,pho,pȟo
+        Replace,phuŋ,pȟuŋ
+        Replace,phe,pȟe
+        Replace,tha,tȟa
+        Replace,tho,tȟo
+        Replace,thuŋ,tȟuŋ
+        Replace,the,tȟe
+    """.strip().split("\n")
+    rules = [
+        tuple(e.strip() for e in rule.split(","))
+        for rule in rules
+    ]
+    normalized_rules = normalize_replace_rules(rules)
+    normalized_rules.append(("Phonemic to LLC accents",))
     return convert(normalized_rules, input_text)
