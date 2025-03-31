@@ -1,9 +1,6 @@
 import streamlit as st
 
 from utils.conversion_functions import (
-    convert_llc_to_uminn,
-    convert_uminn_to_llc_no_velar_aspiration,
-    convert_uminn_to_llc,
     convert_uminn_to_phoneme,
     convert_llc_to_phoneme,
     #convert_whitehat_to_phoneme,
@@ -74,21 +71,6 @@ elif target_orthography == "IPA Phonemic":
 elif target_orthography == source_orthography:
     output_text = input_text
 
-# Old logic, gradually delete as we convert to using a phonemic backend.
-if phonemic_text is None:
-    if source_orthography == "LLC" and target_orthography == "UMinn":
-        output_text = convert_llc_to_uminn(input_text)
-    elif source_orthography == "UMinn" and target_orthography == "LLC":
-        if with_velar_aspiration:
-            output_text = convert_uminn_to_llc(input_text)
-        else:
-            output_text = convert_uminn_to_llc_no_velar_aspiration(input_text)
-    elif source_orthography == target_orthography:
-        output_text = input_text
-    else:
-        st.warning("Conversion not supported at this time")
-        output_text = ""
-# End of deletable old logic
 
 rightcol.html('<p style="font-size: 14px; margin-bottom: -10px">Converted text</p>')
 container = rightcol.container(border=True)
