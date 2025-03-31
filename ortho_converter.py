@@ -5,7 +5,11 @@ from utils.conversion_functions import (
     convert_uminn_to_llc_no_velar_aspiration,
     convert_uminn_to_llc,
     convert_uminn_to_phoneme,
+    convert_llc_to_phoneme,
+    #convert_whitehat_to_phoneme,
     convert_phoneme_to_llc,
+    convert_phoneme_to_uminn
+    #convert_phoneme_to_whitehat
 )
 
 
@@ -15,6 +19,7 @@ ORTHOGRAPHIES = (
     "LLC",
     "UMinn",
     "IPA Phonemic",
+    "Whitehat"
 )
 
 leftcol, rightcol = st.columns(2)
@@ -39,10 +44,19 @@ if target_orthography == "LLC":
 
 # For simplicity, let's make the assumption that any text in its phonemic
 # representation uses the UMinn convention for accents.
+
+# Converting source text to phonemic orthography.
 phonemic_text = None
 if source_orthography == "UMinn":
     phonemic_text = convert_uminn_to_phoneme(input_text)
+elif source_orthography == "LLC":
+    phonemic_text = convert_llc_to_phoneme(input_text)
+elif source_orthography == "IPA Phonemic":
+    phonemic_text = input_text
+#elif source_orthography == "Whitehat":
+#    phonemic_text == convert_whitehat_to_phoneme(input_text)
 
+# Converting phonemic text to target orthography.
 if target_orthography == "LLC":
     if with_velar_aspiration:
         st.success("Phonemic conversion worked!")
@@ -50,8 +64,12 @@ if target_orthography == "LLC":
     else:
         st.warning("Conversion not supported at this time")
         output_text = ""
+elif target_orthography == "UMinn":
+    output_text = convert_phoneme_to_uminn(phonemic_text)
 elif target_orthography == "IPA Phonemic":
     output_text = phonemic_text
+#elif target_orthography == "Whitehat":
+#    output_text = convert_phoneme_to_whitehat(phonemic_text)
 elif target_orthography == source_orthography:
     output_text = input_text
 
