@@ -7,7 +7,8 @@ from utils.conversion_functions import (
     convert_uminn_to_phoneme,
     convert_llc_to_phoneme,
     #convert_whitehat_to_phoneme,
-    convert_phoneme_to_llc,
+    convert_phoneme_to_llc_unvelarized,
+    convert_phoneme_to_llc_velar_aspiration,
     convert_phoneme_to_uminn
     #convert_phoneme_to_whitehat
 )
@@ -59,11 +60,11 @@ elif source_orthography == "IPA Phonemic":
 # Converting phonemic text to target orthography.
 if target_orthography == "LLC":
     if with_velar_aspiration:
-        st.success("Phonemic conversion worked!")
-        output_text = convert_phoneme_to_llc(phonemic_text)
+        st.success("Phonemic conversion with velar aspiration worked!")
+        output_text = convert_phoneme_to_llc_velar_aspiration(phonemic_text)
     else:
-        st.warning("Conversion not supported at this time")
-        output_text = ""
+        st.success("Phonemic conversion without velar aspiration worked!")
+        output_text = convert_phoneme_to_llc_unvelarized(phonemic_text)
 elif target_orthography == "UMinn":
     output_text = convert_phoneme_to_uminn(phonemic_text)
 elif target_orthography == "IPA Phonemic":
