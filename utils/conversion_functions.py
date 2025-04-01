@@ -16,7 +16,7 @@ def convert(rules, input_text) -> str:
                 output_text,
                 flags=re.NOFLAG,
             )
-        elif rule_type == "LLC to UMinn accents":
+        elif rule_type == "LLC to Phonemic accents":
             matches = re.split(r"(\s+)", output_text.lstrip())
             if len(matches) % 2 == 1:
                 matches.append("")
@@ -50,7 +50,7 @@ def convert(rules, input_text) -> str:
                 word = unicodedata.normalize("NFC", word)
                 result += word + whitespace_sequence
             output_text = result
-        elif rule_type == "UMinn to LLC accents":
+        elif rule_type in "Phonemic to LLC accents":
             matches = re.split(r"(\s+)", output_text.lstrip())
             if len(matches) % 2 == 1:
                 matches.append("")
@@ -125,94 +125,144 @@ def normalize_replace_rules(rules):
     return normalized_rules
 
 
-def convert_llc_to_uminn(input_text):
+def convert_uminn_to_phoneme(input_text):
     rules = """
-        Replace,š,ṡ
-        Replace,ȟ,ḣ
-        Replace,ǧ,ġ
-        Replace,č,c
-        Replace,ch,c̣
-        Replace,kh,ḳ
-        Replace,kḣ,ḳ
-        Replace,ph,p̣
-        Replace,pḣ,p̣
-        Replace,th,ṭ
-        Replace,tḣ,ṭ
+        Replace,aŋ,ã
+        Replace,iŋ,ĩ
+        Replace,uŋ,ũ
+        Replace,c̣,tʃʰ
+        Replace,cʼ,tʃʼ
+        Replace,c,tʃ
+        Replace,ḳ,kʰ
+        Replace,p̣,pʰ
+        Replace,ṭ,tʰ
+        Replace,ḣʼ,xʼ
+        Replace,ḣ,x
+        Replace,ṡʼ,ʃʼ
+        Replace,ṡ,ʃ
+        Replace,ġ,ɣ
+        Replace,ż,ʒ
     """.strip().split("\n")
     rules = [
         tuple(e.strip() for e in rule.split(","))
         for rule in rules
     ]
     normalized_rules = normalize_replace_rules(rules)
-    normalized_rules.append(("LLC to UMinn accents",))
     return convert(normalized_rules, input_text)
 
-
-def convert_uminn_to_llc(input_text):
+def convert_llc_to_phoneme(input_text):
     rules = """
-        Replace,ṡ,š
-        Replace,ġ,ǧ
-        Replace,c̣,čh
-        Replace,c,č
-        Replace,ḳa,kȟa
-        Replace,ḳo,kȟo
-        Replace,ḳuŋ,kȟuŋ
-        Replace,ḳe,khe
-        Replace,ḳi,khi
-        Replace,ḳu,ku
-        Replace,p̣a,pȟa
-        Replace,p̣o,pȟo
-        Replace,p̣uŋ,pȟuŋ
-        Replace,p̣e,pȟe
-        Replace,p̣i,phi
-        Replace,p̣u,phu
-        Replace,ṭa,tȟa
-        Replace,ṭo,tȟo
-        Replace,ṭuŋ,tȟuŋ
-        Replace,ṭe,tȟe
-        Replace,ṭi,thi
-        Replace,ṭu,thu
-        Replace,ḣ,ȟ
+        Replace,aŋ,ã
+        Replace,iŋ,ĩ
+        Replace,uŋ,ũ
+        Replace,čh,tʃʰ
+        Replace,čʼ,tʃʼ
+        Replace,č,tʃ
+        Replace,kȟ,kʰ
+        Replace,kh,kʰ
+        Replace,pȟ,pʰ
+        Replace,ph,pʰ
+        Replace,tȟ,tʰ
+        Replace,th,tʰ
+        Replace,ȟʼ,xʼ
+        Replace,ȟ,x
+        Replace,šʼ,ʃʼ
+        Replace,š,ʃ
+        Replace,ǧ,ɣ
+        Replace,ž,ʒ
     """.strip().split("\n")
     rules = [
         tuple(e.strip() for e in rule.split(","))
         for rule in rules
     ]
     normalized_rules = normalize_replace_rules(rules)
-    normalized_rules.append(("UMinn to LLC accents",))
+    normalized_rules.append(("LLC to Phonemic accents",))
     return convert(normalized_rules, input_text)
 
-
-def convert_uminn_to_llc_no_velar_aspiration(input_text):
+def convert_phoneme_to_uminn(input_text):
     rules = """
-        Replace,ṡ,š
-        Replace,ġ,ǧ
-        Replace,c̣,čh
-        Replace,c,č
-        Replace,ḳa,kha
-        Replace,ḳo,kho
-        Replace,ḳuŋ,khuŋ
-        Replace,ḳe,khe
-        Replace,ḳi,khi
-        Replace,ḳu,ku
-        Replace,p̣a,pha
-        Replace,p̣o,pho
-        Replace,p̣uŋ,phuŋ
-        Replace,p̣e,phe
-        Replace,p̣i,phi
-        Replace,p̣u,phu
-        Replace,ṭa,tha
-        Replace,ṭo,tho
-        Replace,ṭuŋ,thuŋ
-        Replace,ṭe,the
-        Replace,ṭi,thi
-        Replace,ṭu,thu
-        Replace,ḣ,h
+        Replace,ã,aŋ
+        Replace,ĩ,iŋ
+        Replace,ũ,uŋ
+        Replace,tʃʰ,c̣
+        Replace,tʃʼ,cʼ
+        Replace,tʃ,c
+        Replace,kʰ,ḳ
+        Replace,pʰ,p̣
+        Replace,tʰ,ṭ
+        Replace,xʼ,ḣʼ
+        Replace,x,ḣ
+        Replace,ʃʼ,ṡʼ
+        Replace,ʃ,ṡ
+        Replace,ɣ,ġ
+        Replace,ʒ,ż
     """.strip().split("\n")
     rules = [
         tuple(e.strip() for e in rule.split(","))
         for rule in rules
     ]
     normalized_rules = normalize_replace_rules(rules)
-    normalized_rules.append(("UMinn to LLC accents",))
+    return convert(normalized_rules, input_text)
+
+def convert_phoneme_to_llc_unvelarized(input_text):
+    rules = """
+        Replace,ã,aŋ
+        Replace,ĩ,iŋ
+        Replace,ũ,uŋ
+        Replace,tʃʰ,čh
+        Replace,tʃʼ,čʼ
+        Replace,tʃ,č
+        Replace,kʰ,kh
+        Replace,pʰ,ph
+        Replace,tʰ,th
+        Replace,xʼ,ȟʼ
+        Replace,x,ȟ
+        Replace,ʃʼ,šʼ
+        Replace,ʃ,š
+        Replace,ɣ,ǧ
+        Replace,ʒ,ž
+    """.strip().split("\n")
+    rules = [
+        tuple(e.strip() for e in rule.split(","))
+        for rule in rules
+    ]
+    normalized_rules = normalize_replace_rules(rules)
+    normalized_rules.append(("Phonemic to LLC accents",))
+    return convert(normalized_rules, input_text)
+
+def convert_phoneme_to_llc_velar_aspiration(input_text):
+    rules = """
+        Replace,ã,aŋ
+        Replace,ĩ,iŋ
+        Replace,ũ,uŋ
+        Replace,tʃʰ,čh
+        Replace,tʃʼ,čʼ
+        Replace,tʃ,č
+        Replace,kʰ,kh
+        Replace,pʰ,ph
+        Replace,tʰ,th
+        Replace,xʼ,ȟʼ
+        Replace,x,ȟ
+        Replace,ʃʼ,šʼ
+        Replace,ʃ,š
+        Replace,ɣ,ǧ
+        Replace,ʒ,ž
+        Replace,kha,kȟa
+        Replace,kho,kȟo
+        Replace,khuŋ,kȟuŋ
+        Replace,pha,pȟa
+        Replace,pho,pȟo
+        Replace,phuŋ,pȟuŋ
+        Replace,phe,pȟe
+        Replace,tha,tȟa
+        Replace,tho,tȟo
+        Replace,thuŋ,tȟuŋ
+        Replace,the,tȟe
+    """.strip().split("\n")
+    rules = [
+        tuple(e.strip() for e in rule.split(","))
+        for rule in rules
+    ]
+    normalized_rules = normalize_replace_rules(rules)
+    normalized_rules.append(("Phonemic to LLC accents",))
     return convert(normalized_rules, input_text)
