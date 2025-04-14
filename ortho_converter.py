@@ -3,7 +3,7 @@ import streamlit as st
 from utils.conversion_functions import (
     convert_uminn_to_phoneme,
     convert_llc_to_phoneme,
-    #convert_whitehat_to_phoneme,
+    convert_whitehat_to_phoneme,
     convert_phoneme_to_llc_unvelarized,
     convert_phoneme_to_llc_velar_aspiration,
     convert_phoneme_to_uminn
@@ -51,8 +51,8 @@ elif source_orthography == "LLC":
     phonemic_text = convert_llc_to_phoneme(input_text)
 elif source_orthography == "IPA Phonemic":
     phonemic_text = input_text
-#elif source_orthography == "Whitehat":
-#    phonemic_text == convert_whitehat_to_phoneme(input_text)
+elif source_orthography == "Whitehat":
+    phonemic_text = convert_whitehat_to_phoneme(input_text)
 
 # Converting phonemic text to target orthography.
 if target_orthography == "LLC":

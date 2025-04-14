@@ -179,6 +179,51 @@ def convert_llc_to_phoneme(input_text):
     normalized_rules.append(("LLC to Phonemic accents",))
     return convert(normalized_rules, input_text)
 
+def convert_whitehat_to_phoneme(input_text):
+    rules = """
+        Replace,ƞ,ŋ
+        Replace,aŋ,ã
+        Replace,iŋ,ĩ
+        Replace,uŋ,ũ
+        Replace,ċ,tʃʰ
+        Replace,c’,tʃʼ
+        Replace,c,tʃ
+        Replace,ka,kʰa
+        Replace,ke,kʰe
+        Replace,ki,kʰi
+        Replace,ko,kʰo
+        Replace,ku,kʰu
+        Replace,k̇,kʰ
+        Replace,k̄,k
+        Replace,pa,pʰa
+        Replace,pe,pʰe
+        Replace,pi,pʰi
+        Replace,po,pʰo
+        Replace,pu,pʰu
+        Replace,ṗ,pʰ
+        Replace,p̄,p
+        Replace,ta,tʰa
+        Replace,te,tʰe
+        Replace,ti,tʰi
+        Replace,to,tʰo
+        Replace,tu,tʰu
+        Replace,ṫ,tʰ
+        Replace,t̄,t
+        Replace,ḣʼ,xʼ
+        Replace,ḣ,x
+        Replace,ṡʼ,ʃʼ
+        Replace,ṡ,ʃ
+        Replace,ġ,ɣ
+        Replace,j,ʒ
+    """.strip().split("\n")
+    rules = [
+        tuple(e.strip() for e in rule.split(","))
+        for rule in rules
+    ]
+    normalized_rules = normalize_replace_rules(rules)
+    normalized_rules.append(("LLC to Phonemic accents",))
+    return convert(normalized_rules, input_text)
+
 def convert_phoneme_to_uminn(input_text):
     rules = """
         Replace,ã,aŋ
