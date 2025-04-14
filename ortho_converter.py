@@ -6,8 +6,9 @@ from utils.conversion_functions import (
     convert_whitehat_to_phoneme,
     convert_phoneme_to_llc_unvelarized,
     convert_phoneme_to_llc_velar_aspiration,
-    convert_phoneme_to_uminn
-    #convert_phoneme_to_whitehat
+    convert_phoneme_to_uminn,
+    convert_phoneme_to_whitehat_unvelarized,
+    convert_phoneme_to_whitehat_velar_aspiration
 )
 
 
@@ -37,7 +38,7 @@ target_orthography = rightcol.selectbox(
     ORTHOGRAPHIES,
     index=1,
 )
-if target_orthography == "LLC":
+if target_orthography == "LLC" or target_orthography == "Whitehat":
     with_velar_aspiration = rightcol.checkbox("With velar aspiration", value=True)
 
 # For simplicity, let's make the assumption that any text in its phonemic
@@ -66,8 +67,13 @@ elif target_orthography == "UMinn":
     output_text = convert_phoneme_to_uminn(phonemic_text)
 elif target_orthography == "IPA Phonemic":
     output_text = phonemic_text
-#elif target_orthography == "Whitehat":
-#    output_text = convert_phoneme_to_whitehat(phonemic_text)
+elif target_orthography == "Whitehat":
+    if with_velar_aspiration:
+        st.success("Phonemic conversion with velar aspiration worked!")
+        output_text = convert_phoneme_to_whitehat_velar_aspiration(phonemic_text)
+    else:
+        st.success("Phonemic conversion without velar aspiration worked!")
+        output_text = convert_phoneme_to_whitehat_unvelarized(phonemic_text)
 elif target_orthography == source_orthography:
     output_text = input_text
 
