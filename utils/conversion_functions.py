@@ -113,7 +113,7 @@ def normalize_replace_rules(rules):
         target = unicodedata.normalize("NFD", target)
         repl = unicodedata.normalize("NFD", repl)
         target = re.sub(r"([aeiou])", r"\1(́)?", target) # a -> a(́)?
-        target += r"(?=\w|\s|[!\"#\$%&'\(\)\*+,-\./:;<=>\?@\[\\\]\^_`\{\|\}~]|$)"
+        target += r"(?=\w|\s|[!\"#\$%&'\(\)\*+,-\./:;<=>\?@\[\\\]\^_`\{\|\}~’]|$)"
         repl = re.sub(r"([aeiou])", r"\1\\1", repl) # a -> a\1
         normalized_rules.append((rule_type, target, repl))
         normalized_rules.append((rule_type, target.upper(), repl.upper()))
