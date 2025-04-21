@@ -183,6 +183,7 @@ def convert_whitehat_to_phoneme(input_text):
     rules = """
         Replace,ċ,tʃʰ
         Replace,c’,tʃʼ
+        Replace,č’,tʃʼ
         Replace,c,tʃ
         Replace,ka,kʰa
         Replace,ke,kʰe
