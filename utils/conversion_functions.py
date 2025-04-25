@@ -113,7 +113,11 @@ def normalize_replace_rules(rules):
         target = unicodedata.normalize("NFD", target)
         repl = unicodedata.normalize("NFD", repl)
         target = re.sub(r"([aeiou])", r"\1(́)?", target) # a -> a(́)?
-        target += r"(?=\w|\s|[!\"#\$%&'\(\)\*+,-\./:;<=>\?@\[\\\]\^_`\{\|\}~]|$)"
+        # Following line implements 4. from above with a look-ahead
+        # assertion by requiring the next character to be either a
+        # letter, whitespace, one of a number of non-combining
+        # punctuation marks, or the end of the string.
+        target += r"(?=\w|\s|[!\"#\$%&'\(\)\*+,-\./:;<=>\?@\[\\\]\^_`\{\|\}~’]|$)"
         repl = re.sub(r"([aeiou])", r"\1\\1", repl) # a -> a\1
         normalized_rules.append((rule_type, target, repl))
         normalized_rules.append((rule_type, target.upper(), repl.upper()))
