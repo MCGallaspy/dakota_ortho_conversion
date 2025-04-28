@@ -128,7 +128,7 @@ def normalize_replace_rules(rules):
         normalized_rules.append((rule_type, target, repl))
     return normalized_rules
 
-
+# This set of rules converts orthographies to phonemic backend.
 def convert_uminn_to_phoneme(input_text):
     rules = """
         Replace,aŋ,ã
@@ -183,6 +183,52 @@ def convert_llc_to_phoneme(input_text):
     normalized_rules.append(("LLC to Phonemic accents",))
     return convert(normalized_rules, input_text)
 
+def convert_whitehat_to_phoneme(input_text):
+    rules = """
+        Replace,ċ,tʃʰ
+        Replace,c’,tʃʼ
+        Replace,c,tʃ
+        Replace,ka,kʰa
+        Replace,ke,kʰe
+        Replace,ki,kʰi
+        Replace,ko,kʰo
+        Replace,ku,kʰu
+        Replace,k̇,kʰ
+        Replace,k̄,k
+        Replace,pa,pʰa
+        Replace,pe,pʰe
+        Replace,pi,pʰi
+        Replace,po,pʰo
+        Replace,pu,pʰu
+        Replace,ṗ,pʰ
+        Replace,p̄,p
+        Replace,ta,tʰa
+        Replace,te,tʰe
+        Replace,ti,tʰi
+        Replace,to,tʰo
+        Replace,tu,tʰu
+        Replace,ṫ,tʰ
+        Replace,t̄,t
+        Replace,ḣʼ,xʼ
+        Replace,ḣ,x
+        Replace,ṡʼ,ʃʼ
+        Replace,ṡ,ʃ
+        Replace,ġ,ɣ
+        Replace,j,ʒ
+        Replace,ƞ,ŋ
+        Replace,aŋ,ã
+        Replace,iŋ,ĩ
+        Replace,uŋ,ũ
+    """.strip().split("\n")
+    rules = [
+        tuple(e.strip() for e in rule.split(","))
+        for rule in rules
+    ]
+    normalized_rules = normalize_replace_rules(rules)
+    normalized_rules.append(("LLC to Phonemic accents",))
+    return convert(normalized_rules, input_text)
+
+# This set of rules converts phonemic backend orthographies.
 def convert_phoneme_to_uminn(input_text):
     rules = """
         Replace,ã,aŋ
@@ -269,4 +315,99 @@ def convert_phoneme_to_llc_velar_aspiration(input_text):
     ]
     normalized_rules = normalize_replace_rules(rules)
     normalized_rules.append(("Phonemic to LLC accents",))
+    return convert(normalized_rules, input_text)
+
+def convert_phoneme_to_whitehat_unvelarized(input_text):
+    rules = """
+        Replace,ã,aŋ
+        Replace,ĩ,iŋ
+        Replace,ũ,uŋ
+        Replace,ŋ,ƞ
+        Replace,tʃʰ,ċ
+        Replace,tʃʼ,c’
+        Replace,tʃ,c
+        Replace,kʰ,k̇
+        Replace,ka,k̄a
+        Replace,ke,k̄e
+        Replace,ki,k̄i
+        Replace,ko,k̄o
+        Replace,ku,k̄u
+        Replace,k̇,k
+        Replace,pʰ,ṗ
+        Replace,pa,p̄a
+        Replace,pe,p̄e
+        Replace,pi,p̄i
+        Replace,po,p̄o
+        Replace,pu,p̄u
+        Replace,ṗ,p
+        Replace,tʰ,ṫ
+        Replace,ta,t̄a
+        Replace,te,t̄e
+        Replace,ti,t̄i
+        Replace,to,t̄o
+        Replace,tu,t̄u
+        Replace,ṫ,t
+        Replace,xʼ,ḣʼ
+        Replace,x,ḣ
+        Replace,ʃʼ,ṡʼ
+        Replace,ʃ,ṡ
+        Replace,ɣ,ġ
+        Replace,ʒ,j
+    """.strip().split("\n")
+    rules = [
+        tuple(e.strip() for e in rule.split(","))
+        for rule in rules
+    ]
+    normalized_rules = normalize_replace_rules(rules)
+    return convert(normalized_rules, input_text)
+
+def convert_phoneme_to_whitehat_velar_aspiration(input_text):
+    rules = """
+        Replace,ã,aŋ
+        Replace,ĩ,iŋ
+        Replace,ũ,uŋ
+        Replace,ŋ,ƞ
+        Replace,tʃʰ,ċ
+        Replace,tʃʼ,c’
+        Replace,tʃ,c
+        Replace,kʰ,k̇
+        Replace,ka,k̄a
+        Replace,ke,k̄e
+        Replace,ki,k̄i
+        Replace,ko,k̄o
+        Replace,ku,k̄u
+        Replace,k̇e,ke
+        Replace,k̇i,ki
+        Replace,k̇u,ku
+        Replace,kuƞ,k̇uƞ
+        Replace,pʰ,ṗ
+        Replace,pa,p̄a
+        Replace,pe,p̄e
+        Replace,pi,p̄i
+        Replace,po,p̄o
+        Replace,pu,p̄u
+        Replace,ṗi,pi
+        Replace,ṗu,pu
+        Replace,puƞ,ṗuƞ
+        Replace,tʰ,ṫ
+        Replace,ta,t̄a
+        Replace,te,t̄e
+        Replace,ti,t̄i
+        Replace,to,t̄o
+        Replace,tu,t̄u
+        Replace,ṫi,ti
+        Replace,ṫu,tu
+        Replace,tuƞ,ṫuƞ
+        Replace,xʼ,ḣʼ
+        Replace,x,ḣ
+        Replace,ʃʼ,ṡʼ
+        Replace,ʃ,ṡ
+        Replace,ɣ,ġ
+        Replace,ʒ,j
+    """.strip().split("\n")
+    rules = [
+        tuple(e.strip() for e in rule.split(","))
+        for rule in rules
+    ]
+    normalized_rules = normalize_replace_rules(rules)
     return convert(normalized_rules, input_text)
